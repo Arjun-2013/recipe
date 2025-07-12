@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Indian Vegan Recipes Finder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c6e49;
+    }
+    #inputSection {
+      margin: 20px 0;
+      text-align: center;
+    }
+    input[type="text"] {
+      width: 300px;
+      padding: 8px;
+      font-size: 16px;
+    }
+    button {
+      padding: 8px 15px;
+      font-size: 16px;
+      margin-left: 10px;
+      background-color: #2c6e49;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #225c3a;
+    }
+    #recipeList {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .recipe {
+      background: white;
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 7px rgba(0,0,0,0.1);
+    }
+    .recipe h3 {
+      margin: 0 0 8px 0;
+      color: #2c6e49;
+    }
+    .ingredients {
+      font-style: italic;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Indian Vegan Recipes Finder</h1>
+  
+  <div id="inputSection">
+    <label for="ingredientsInput">Enter ingredients you have (comma separated):</label><br />
+    <input type="text" id="ingredientsInput" placeholder="e.g. tomato, chickpeas, spinach" />
+    <button onclick="findRecipes()">Find Recipes</button>
+  </div>
+
+  <div id="recipeList"></div>
+
+  <script>
+    const recipes = [
+      { name: "Chana Masala", ingredients: ["chickpeas", "tomato", "onion", "ginger", "garlic", "spices"] },
+      { name: "Aloo Gobi", ingredients: ["potato", "cauliflower", "tomato", "turmeric", "cumin", "coriander"] },
+      { name: "Palak Tofu", ingredients: ["spinach", "tofu", "onion", "garlic", "ginger", "spices"] },
+      { name: "Baingan Bharta", ingredients: ["eggplant", "tomato", "onion", "garlic", "mustard oil", "spices"] },
+      { name: "Masoor Dal", ingredients: ["red lentils", "tomato", "onion", "garlic", "turmeric", "spices"] },
+
+      { name: "Rajma", ingredients: ["kidney beans", "tomato", "onion", "ginger", "garlic", "spices"] },
+      { name: "Bhindi Masala", ingredients: ["okra", "onion", "tomato", "turmeric", "cumin", "spices"] },
+      { name: "Vegetable Biryani", ingredients: ["rice", "carrot", "peas", "potato", "onion", "spices"] },
+      { name: "Sambar", ingredients: ["toor dal", "tamarind", "tomato", "drumstick", "carrot", "spices"] },
+      { name: "Tadka Dal", ingredients: ["moong dal", "tomato", "onion", "garlic", "mustard seeds", "spices"] },
+
+      { name: "Aloo Matar", ingredients: ["potato", "green peas", "tomato", "onion", "garlic", "spices"] },
+      { name: "Cabbage Sabzi", ingredients: ["cabbage", "mustard seeds", "green chili", "turmeric", "spices"] },
+      { name: "Vegan Korma", ingredients: ["cashew", "coconut milk", "mixed vegetables", "onion", "spices"] },
+      { name: "Dum Aloo", ingredients: ["potato", "tomato", "onion", "spices", "yogurt substitute"] },
+      { name: "Lauki Sabzi", ingredients: ["bottle gourd", "tomato", "onion", "turmeric", "spices"] },
+
+      { name: "Chole", ingredients: ["chickpeas", "tomato", "onion", "ginger", "garlic", "spices"] },
+      { name: "Mixed Vegetable Curry", ingredients: ["carrot", "beans", "potato", "peas", "tomato", "onion", "spices"] },
+      { name: "Pumpkin Curry", ingredients: ["pumpkin", "tomato", "onion", "mustard seeds", "spices"] },
+      { name: "Methi Thepla", ingredients: ["fenugreek leaves", "wheat flour", "spices"] },
+      { name: "Vegan Pulao", ingredients: ["rice", "peas", "carrot", "beans", "onion", "spices"] },
+
+      { name: "Cucumber Raita (vegan)", ingredients: ["cucumber", "vegan yogurt", "cumin", "coriander"] },
+      { name: "Vegan Dosa", ingredients: ["rice", "urad dal", "fenugreek"] },
+      { name: "Vegan Idli", ingredients: ["rice", "urad dal", "fenugreek"] },
+      { name: "Tomato Rasam", ingredients: ["tomato", "tamarind", "mustard seeds", "curry leaves", "spices"] },
+      { name: "Green Moong Dal Curry", ingredients: ["green moong dal", "onion", "tomato", "garlic", "spices"] },
+
+      { name: "Vegetable Upma", ingredients: ["semolina", "mustard seeds", "carrot", "peas", "onion", "spices"] },
+      { name: "Karela Sabzi", ingredients: ["bitter gourd", "onion", "tomato", "spices"] },
+      { name: "Vegan Butter Masala", ingredients: ["tomato", "cashew", "onion", "garlic", "spices"] },
+      { name: "Tinda Sabzi", ingredients: ["apple gourd", "onion", "tomato", "spices"] },
+      { name: "Vegan Pakora", ingredients: ["gram flour", "onion", "potato", "spinach", "spices"] },
+
+      { name: "Vegan Biryani", ingredients: ["rice", "mixed vegetables", "onion", "yogurt substitute", "spices"] },
+      { name: "Vegan Pav Bhaji", ingredients: ["potato", "peas", "tomato", "onion", "spices"] },
+      { name: "Mango Chutney", ingredients: ["mango", "sugar", "vinegar", "spices"] },
+      { name: "Vegan Samosa", ingredients: ["potato", "peas", "gram flour", "spices"] },
+      { name: "Bharta (Lauki or Tinda)", ingredients: ["bottle gourd", "tinda", "onion", "tomato", "spices"] },
+
+      { name: "Masala Peanuts", ingredients: ["peanuts", "spices", "chili powder"] },
+      { name: "Sabudana Khichdi", ingredients: ["sabudana", "peanuts", "potato", "green chili", "spices"] },
+      { name: "Vegan Kachori", ingredients: ["gram flour", "spices", "oil"] },
+      { name: "Methi Malai Matar (vegan)", ingredients: ["fenugreek leaves", "green peas", "coconut milk", "spices"] },
+      { name: "Beetroot Sabzi", ingredients: ["beetroot", "mustard seeds", "turmeric", "spices"] },
+
+      { name: "Vegan Pani Puri", ingredients: ["semolina", "tamarind", "mint", "spices"] },
+      { name: "Stuffed Capsicum", ingredients: ["capsicum", "potato", "onion", "spices"] },
+      { name: "Vegan Lassi", ingredients: ["vegan yogurt", "mango", "cardamom"] },
+      { name: "Sprouted Moong Salad", ingredients: ["sprouted moong", "tomato", "onion", "lemon"] },
+      { name: "Carrot Halwa (vegan)", ingredients: ["carrot", "coconut milk", "jaggery", "cardamom"] },
+    ];
+
+    const recipeListDiv = document.getElementById("recipeList");
+
+    function displayAllRecipes() {
+      recipeListDiv.innerHTML = "";
+      recipes.forEach(recipe => {
+        const div = document.createElement("div");
+        div.className = "recipe";
+        div.innerHTML = `<h3>${recipe.name}</h3><div class="ingredients"><strong>Ingredients:</strong> ${recipe.ingredients.join(", ")}</div>`;
+        recipeListDiv.appendChild(div);
+      });
+    }
+
+    displayAllRecipes();
+
+    function findRecipes() {
+      const input = document.getElementById("ingredientsInput").value.trim().toLowerCase();
+      if (!input) {
+        alert("Please enter at least one ingredient.");
+        return;
+      }
+      const userIngredients = input.split(",").map(i => i.trim());
+
+      // Find recipes with at least 50% ingredients matched
+      const possibleRecipes = recipes.filter(recipe => {
+        const matchedCount = recipe.ingredients.filter(ing => userIngredients.includes(ing)).length;
+        const matchRatio = matchedCount / recipe.ingredients.length;
+        return matchRatio >= 0.5;
+      });
+
+      if (possibleRecipes.length > 0) {
+        alert(`Oh! You can make:\n\n${possibleRecipes.map(r => r.name).join("\n")}`);
+      } else {
+        alert("Sorry, you can't make any recipe with these ingredients.");
+      }
+    }
+  </script>
+
+</body>
+</html>
